@@ -1,0 +1,19 @@
+set $glass_bg      #7ec8e3aa
+set $glass_border  #ffffff88
+set $active_green  #4dbb42
+set $text_dark     #1a1a1a
+
+default_border pixel 2
+default_floating_border pixel 2
+smart_borders on
+
+# Windows colors:        Border          Background      Text            Indicator       Child_border
+client.focused         $active_green   $glass_bg       $text_dark      #ffffff         $active_green
+client.focused_inactive #888888        #eeeeeeaa       #555555         #ffffff         #888888
+client.unfocused       #cccccc        #ffffff55       #888888         #ffffff         #cccccc
+
+gaps inner 12
+gaps outer 5
+
+exec_always --no-startup-id picom --config ~/.config/picom/picom.conf
+exec_always --no-startup-id feh --bg-fill ~/Pictures/frutiger_aero_wallpaper.jpg
