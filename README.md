@@ -20,6 +20,15 @@ Personal dotfiles and system configurations. This repository is organized strict
 
 ---
 
+## 🛠️ To-Do List (Work in Progress)
+- [x] Basic i3wm structure
+- [x] Python Installer core
+- [ ] **Polybar glassy theme** (Currently working on this)
+- [ ] GTK Theme & Icon pack selection
+- [ ] Wallpapers collection
+
+---
+
 ## 📂 Structure
 
 The repository separates core application configs from system-level service management:
