@@ -52,10 +52,10 @@ The repository separates core application configs from system-level service mana
 ⌨️ Key Bindings (Essentials)
 Shortcut	Action
 Mod + Enter	Open Alacritty
-Mod + d	App Menu (Rofi/Dmenu)
+Mod + d	App Menu Rofi
 Mod + Shift + q	Close Window
 Mod + Shift + r	Restart i3 & Polybar
-Mod + 1-5	Switch Workspaces (JetBrains Icons)
+Mod + 1-5	Switch Workspaces 
 
 ---
 
