@@ -3,6 +3,9 @@
 ![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)
 ![Init](https://img.shields.io/badge/init-OpenRC-orange)
 ![WM](https://img.shields.io/badge/WM-i3wm-green)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white&labelColor=3776ab)
+![Terminal](https://img.shields.io/badge/terminal-Alacritty-orange?style=for-the-badge&logo=alacritty&logoColor=white&labelColor=f4a261)
+![Shell](https://img.shields.io/badge/shell-Zsh-blue?style=for-the-badge&logo=zsh&logoColor=white&labelColor=284c8d)
 
 Personal dotfiles and system configurations. This repository is organized strictly by the **init system** rather than the specific distribution, ensuring better portability for Artix and Gentoo users.
 
