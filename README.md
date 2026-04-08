@@ -1,43 +1,55 @@
-Dotfiles
+# i3wm configs
 
-This repository contains my personal system configurations. The structure is organized strictly by the init system rather than the specific distribution.
-Software Stack
+![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)
+![Init](https://img.shields.io/badge/init-OpenRC-orange)
+![WM](https://img.shields.io/badge/WM-i3wm-green)
 
-    Distro: Artix
+Personal dotfiles and system configurations. This repository is organized strictly by the **init system** rather than the specific distribution, ensuring better portability for Artix and Gentoo users.
 
-    Window Manager: i3wm
+---
 
-    Shell: Zsh
+## 🛠️ Software Stack
 
-    Terminal: Alacritty
+* **Distro:** Artix Linux (OpenRC)
+* **Window Manager:** i3wm
+* **Shell:** Zsh (with custom aliases & fastfetch)
+* **Terminal:** Alacritty
+* **Editor:** Neovim
+* **File Manager:** Yazi
+* **Visual Style:** Inspired by Frutiger Aero (Glass Blur / Liquid Gloss)
 
-    Editor: Neovim
+---
 
-    File Manager: Yazi
+## 📂 Structure
 
-Structure
+The repository separates core application configs from system-level service management:
 
-    openrc/ - Scripts and configurations for OpenRC-based setups (Artix/Gentoo).
+* `openrc/` – Scripts and service configurations for OpenRC-based setups.
+* `common/` – Init-agnostic application configurations (maps to `~/.config/`).
+* `scripts/` – Custom automation, including a Python-based interactive installer.
 
-    common/ - Init-agnostic application configurations (dotfiles for ~/.config/).
+---
 
-    scripts/ - Custom automation and utility scripts.
+## 🚀 Installation
 
-Installation:
+### 1. Clone the repository
+```bash
+git clone [https://github.com/LubieBudyn699/i3wm-configs.git](https://github.com/TWOJA_NAZWA/i3wm-configs.git)
+cd i3wm-configs
 
-OpenRC / General
+2. Run the Installer
+
+I have developed a custom Python installer using dialog to handle package selection and symlinking:
 Bash
 
-git clone https://github.com/user/dotfiles.git
-cd dotfiles
-cp -r common/* ~/.config/
-# Apply init-specific services from openrc/ as needed
+python3 scripts/install.py
 
-Other things:
-If you are using a system other than Arch/Artix, ensure that the package names match those used by your specific package manager.
+Note: If you prefer manual installation, you can copy the contents of common/ to your ~/.config/ directory.
+⚙️ GPU & Performance
 
-Make sure to select the configurations appropriate for your graphics card in the installer.
+The installer includes profiles for AMD and Nvidia. Make sure to select the appropriate one to ensure transparency and blur effects (Picom) work correctly with your hardware.
+⚖️ License
 
-License
+This project is licensed under GPL 2.0. Feel free to fork and modify!
 
-GPL 2.0
+Maintained by LubieBudyn699
