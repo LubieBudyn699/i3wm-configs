@@ -61,7 +61,7 @@ def main():
     
     while True:
         main_choice = run_dialog([
-            "dialog", "--clear", "--title",
+            "dialog", "--clear", "--title", " INSTALACJA DOTFILES ",
             "--menu", "Twoje wybory są automatycznie zapamiętywane:", "18", "60", "6",
             "1", "Pakiety systemowe",
             "2", "Wybór powłoki (Shell)",
@@ -122,4 +122,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-  
