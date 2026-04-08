@@ -39,6 +39,26 @@ The repository separates core application configs from system-level service mana
 
 ---
 
+## What the installer does:
+
+    [x] Checks for dependencies.
+
+    [x] Creates symlinks from common/ to ~/.config/.
+
+    [x] Automatically applies chmod +x to shell scripts (like launch.sh).
+
+    [x] Handles GPU-specific profiles (AMD/Nvidia).
+
+⌨️ Key Bindings (Essentials)
+Shortcut	Action
+Mod + Enter	Open Alacritty
+Mod + d	App Menu (Rofi/Dmenu)
+Mod + Shift + q	Close Window
+Mod + Shift + r	Restart i3 & Polybar
+Mod + 1-5	Switch Workspaces (JetBrains Icons)
+
+---
+
 ## 🚀 Installation
 
 ### 1. Clone the repository
