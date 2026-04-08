@@ -79,7 +79,7 @@ def main():
                 cmd.extend([p, "", status])
             
             config["packages"] = run_dialog(cmd).splitlines()
-            save_config(config) # Zapisz od razu po zmianie
+            save_config(config) 
 
         elif main_choice == "2":
             config["shell"] = run_dialog([
