@@ -100,7 +100,7 @@ def main():
     
     while True:
         main_choice = run_dialog([
-            "dialog", "--clear", "--title", " INSTALACJA DOTFILES - RDNA 4 READY ",
+            "dialog", "--clear", "--title", " INSTALACJA DOTFILES ",
             "--menu", "Wybory są zapamiętywane w JSON:", "18", "60", "6",
             "1", "Pakiety systemowe (Apps)",
             "2", "Wybór powłoki (Shell/ZSH)",
@@ -131,7 +131,7 @@ def main():
         elif main_choice == "3":
             config["gpu"] = run_dialog([
                 "dialog", "--menu", " Profil GPU: ", "12", "40", "2",
-                "AMD", "Mesa (RDNA 4 Optimized)",
+                "AMD", "Mesa",
                 "Nvidia", "Proprietary Drivers"
             ])
             save_config(config)
@@ -156,10 +156,9 @@ def main():
             # 2. Linkowanie dotfiles z folderu common/
             setup_dotfiles()
 
-            # 3. Dodatkowe info o GPU (FSR 4)
-            if config["gpu"] == "AMD":
-                print("\n🚀 RDNA 4 Detected: Enabling FSR 4 environment variables...")
-                # Tu można by dopisać exporty do .zshrc
+           
+
+                
             
             input("\n✅ Wszystko gotowe! Enter, by wrócić...")
 
