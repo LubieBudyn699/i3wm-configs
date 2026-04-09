@@ -6,6 +6,7 @@ import json
 import logging
 import stat
 
+# --- LOGGING SETUP ---
 logging.basicConfig(
     filename='install.log',
     level=logging.INFO,
@@ -15,28 +16,31 @@ logging.basicConfig(
 
 CONFIG_FILE = "user_selection.json"
 
- (~/.config/)
+# --- CONFIGURATION MAP ---
+# Removed zsh and nvim as requested. Only existing folders here.
 DOTFILES_MAP = {
     "i3": "~/.config/i3",
     "alacritty": "~/.config/alacritty",
-    "polybar": "~/.config/polybar",
-    "nvim": "~/.config/nvim",
-    "zsh": "~/.config/zsh"
+    "polybar": "~/.config/polybar"
 }
 
 def run_dialog(cmd):
+    """Run dialog and return user input."""
     try:
         result = subprocess.run(cmd, stderr=subprocess.PIPE, text=True)
         return result.stderr.strip()
     except FileNotFoundError:
-        logging.error("Narzędzie 'dialog' nie jest zainstalowane.")
+        print("Error: 'dialog' is not installed. Install it with: sudo pacman -S dialog")
         sys.exit(1)
 
 def load_config():
+    """Load configuration or return default selections."""
     default_config = {
-        "packages": ["thunar", "btop", "fastfetch", "alacritty", "rofi"],
-        "shell": "zsh",
-        "ui_features": ["i3-wm", "polybar", "picom", "ttf-jetbrains-mono-nerd"],
+        "packages": ["thunar", "btop", "fastfetch", "alacritty", "rofi", "feh", "firefox", "steam", "git"],
+        "ui_features": [
+            "i3-wm", "polybar", "picom", "ttf-jetbrains-mono-nerd", 
+            "nwg-look", "catppuccin-gtk-theme-mocha", "catppuccin-cursors-mocha", "papirus-icon-theme"
+        ],
         "gpu": "AMD"
     }
     if os.path.exists(CONFIG_FILE):
@@ -44,124 +48,113 @@ def load_config():
             with open(CONFIG_FILE, "r") as f:
                 return json.load(f)
         except Exception as e:
-            logging.error(f"Błąd wczytywania configu: {e}")
+            logging.error(f"Load error: {e}")
     return default_config
 
 def save_config(config_data):
+    """Save selections to JSON."""
     try:
         with open(CONFIG_FILE, "w") as f:
             json.dump(config_data, f, indent=4)
     except Exception as e:
-        logging.error(f"Błąd zapisu: {e}")
+        logging.error(f"Save error: {e}")
 
 def make_executable(path):
-
+    """Set +x permission on a file."""
     if os.path.exists(path):
         st = os.stat(path)
         os.chmod(path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-        logging.info(f"Nadano uprawnienia +x: {path}")
 
 def setup_dotfiles():
-
-    print("\n--- Deploying Dotfiles (Frutiger Aero Setup) ---")
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    """Create symlinks for the existing config folders."""
+    print("\n--- Deploying Dotfiles ---")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(script_dir)
     common_dir = os.path.join(base_dir, "common")
 
     for src_name, dest_path in DOTFILES_MAP.items():
         src = os.path.join(common_dir, src_name)
         dest = os.path.expanduser(dest_path)
 
-
         os.makedirs(os.path.dirname(dest), exist_ok=True)
 
         if os.path.exists(src):
             if os.path.exists(dest) or os.path.islink(dest):
-                print(f"⚠️  Target {dest} exists. Skipping link.")
-            else:
-                os.symlink(src, dest)
-                print(f"✅ Linked: {src_name} -> {dest}")
-                logging.info(f"Utworzono symlink: {src} -> {dest}")
+                subprocess.run(["rm", "-rf", dest])
+            os.symlink(src, dest)
+            print(f"✅ Linked: {src_name} -> {dest}")
         else:
-            print(f"❌ Source {src} not found in common/ folder.")
+            print(f"❌ Error: {src} folder not found in repo.")
 
-
+    # Fix Polybar script
     polybar_launch = os.path.expanduser("~/.config/polybar/launch.sh")
     make_executable(polybar_launch)
 
 def install_packages(packages):
+    """Run pacman installation."""
     if not packages:
         return
-    print(f"\n--- Instalowanie: {', '.join(packages)} ---")
-
+    print(f"\n--- Installing Packages ---")
     subprocess.run(["sudo", "pacman", "-S", "--noconfirm", "--needed"] + packages)
 
 def main():
     config = load_config()
 
     while True:
-        main_choice = run_dialog([
-            "dialog", "--clear", "--title", " INSTALACJA DOTFILES ",
-            "--menu", "Wybory są zapamiętywane w JSON:", "18", "60", "6",
-            "1", "Pakiety systemowe (Apps)",
-            "2", "Wybór powłoki (Shell/ZSH)",
-            "3", "GPU Profile (RX 9070XT / Nvidia)",
-            "4", "Wygląd (i3, Polybar, Picom)",
-            "5", ">>> ROZPOCZNIJ INSTALACJĘ I LINKOWANIE <<<",
-            "6", "Wyjście"
+        choice = run_dialog([
+            "dialog", "--clear", "--title", " DOTFILES INSTALLER ",
+            "--menu", "Adjust your setup selections:", "18", "60", "6",
+            "1", "Apps & Steam",
+            "2", "UI & Catppuccin Themes",
+            "3", "GPU Profile",
+            "4", ">>> START INSTALLATION <<<",
+            "5", "Exit"
         ])
 
-        if main_choice == "1":
-            pkgs = ["thunar", "firefox", "btop", "fastfetch", "alacritty", "rofi", "feh"]
-            cmd = ["dialog", "--separate-output", "--checklist", " Wybierz pakiety: ", "15", "60", "7"]
-            for p in pkgs:
-                status = "on" if p in config["packages"] else "off"
-                cmd.extend([p, "", status])
+        if choice == "1":
+            apps = ["thunar", "firefox", "btop", "fastfetch", "alacritty", "rofi", "feh", "steam", "git"]
+            cmd = ["dialog", "--separate-output", "--checklist", " Select Apps: ", "15", "60", "9"]
+            for a in apps:
+                status = "on" if a in config["packages"] else "off"
+                cmd.extend([a, "", status])
             config["packages"] = run_dialog(cmd).splitlines()
             save_config(config)
 
-        elif main_choice == "2":
-            config["shell"] = run_dialog([
-                "dialog", "--menu", " Wybierz Shell: ", "12", "40", "3",
-                "zsh", "Z-Shell (Recommended)",
-                "bash", "Standardowy Bash",
-                "fish", "Friendly Shell"
-            ])
-            save_config(config)
-
-        elif main_choice == "3":
-            config["gpu"] = run_dialog([
-                "dialog", "--menu", " Profil GPU: ", "12", "40", "2",
-                "AMD", "Mesa",
-                "Nvidia", "Proprietary Drivers"
-            ])
-            save_config(config)
-
-        elif main_choice == "4":
-            features = ["i3-wm", "polybar", "picom", "ttf-jetbrains-mono-nerd"]
-            cmd = ["dialog", "--separate-output", "--checklist", " UI Setup: ", "15", "60", "4"]
-            for f in features:
-                status = "on" if f in config["ui_features"] else "off"
-                cmd.extend([f, "", status])
+        elif choice == "2":
+            ui = [
+                "i3-wm", "polybar", "picom", "ttf-jetbrains-mono-nerd", 
+                "nwg-look", "catppuccin-gtk-theme-mocha", "catppuccin-cursors-mocha", "papirus-icon-theme"
+            ]
+            cmd = ["dialog", "--separate-output", "--checklist", " Themes & UI: ", "15", "60", "8"]
+            for item in ui:
+                status = "on" if item in config["ui_features"] else "off"
+                cmd.extend([item, "", status])
             config["ui_features"] = run_dialog(cmd).splitlines()
             save_config(config)
 
-        elif main_choice == "5":
+        elif choice == "3":
+            config["gpu"] = run_dialog([
+                "dialog", "--menu", " GPU Driver: ", "12", "40", "2",
+                "AMD", "Mesa",
+                "Nvidia", "Proprietary"
+            ])
+            save_config(config)
+
+        elif choice == "4":
             os.system("clear")
-            all_to_install = config["packages"] + config["ui_features"]
-            if config["shell"] != "bash":
-                all_to_install.append(config["shell"])
-            install_packages(all_to_install)
+            
+            # Combine all packages for installation
+            to_install = config["packages"] + config["ui_features"]
+            if config["gpu"] == "Nvidia":
+                to_install.extend(["nvidia-dkms", "nvidia-utils"])
 
-
+            install_packages(to_install)
             setup_dotfiles()
 
+            print("\n✨ Done. System ready for Catppuccin Mocha.")
+            input("\nPress Enter to return...")
 
-
-
-
-            input("\n✅ Wszystko gotowe! Enter, by wrócić...")
-
-        elif main_choice == "6" or not main_choice:
+        elif choice == "5" or not choice:
             os.system("clear")
             break
 
