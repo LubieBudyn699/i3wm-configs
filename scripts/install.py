@@ -15,7 +15,7 @@ logging.basicConfig(
 
 CONFIG_FILE = "user_selection.json"
 
-# Mapowanie: Folder w repo (common/) -> Cel w systemie (~/.config/)
+ (~/.config/)
 DOTFILES_MAP = {
     "i3": "~/.config/i3",
     "alacritty": "~/.config/alacritty",
@@ -55,23 +55,23 @@ def save_config(config_data):
         logging.error(f"Błąd zapisu: {e}")
 
 def make_executable(path):
-    """Nadaje uprawnienia +x dla skryptów."""
+
     if os.path.exists(path):
         st = os.stat(path)
         os.chmod(path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         logging.info(f"Nadano uprawnienia +x: {path}")
 
 def setup_dotfiles():
-    """Tworzy symlinki z folderu common do ~/.config."""
+
     print("\n--- Deploying Dotfiles (Frutiger Aero Setup) ---")
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Root repo
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     common_dir = os.path.join(base_dir, "common")
 
     for src_name, dest_path in DOTFILES_MAP.items():
         src = os.path.join(common_dir, src_name)
         dest = os.path.expanduser(dest_path)
 
-        # Tworzenie folderu ~/.config jeśli nie istnieje
+
         os.makedirs(os.path.dirname(dest), exist_ok=True)
 
         if os.path.exists(src):
@@ -84,7 +84,7 @@ def setup_dotfiles():
         else:
             print(f"❌ Source {src} not found in common/ folder.")
 
-    # Automatyczny CHMOD dla launch.sh Polybara
+
     polybar_launch = os.path.expanduser("~/.config/polybar/launch.sh")
     make_executable(polybar_launch)
 
@@ -92,12 +92,12 @@ def install_packages(packages):
     if not packages:
         return
     print(f"\n--- Instalowanie: {', '.join(packages)} ---")
-    # Zakładamy Artix/Arch (pacman). Dla NixOS trzeba by użyć nix-env.
+
     subprocess.run(["sudo", "pacman", "-S", "--noconfirm", "--needed"] + packages)
 
 def main():
     config = load_config()
-    
+
     while True:
         main_choice = run_dialog([
             "dialog", "--clear", "--title", " INSTALACJA DOTFILES ",
@@ -117,7 +117,7 @@ def main():
                 status = "on" if p in config["packages"] else "off"
                 cmd.extend([p, "", status])
             config["packages"] = run_dialog(cmd).splitlines()
-            save_config(config) 
+            save_config(config)
 
         elif main_choice == "2":
             config["shell"] = run_dialog([
@@ -147,19 +147,18 @@ def main():
 
         elif main_choice == "5":
             os.system("clear")
-            # 1. Instalacja pakietów
             all_to_install = config["packages"] + config["ui_features"]
             if config["shell"] != "bash":
                 all_to_install.append(config["shell"])
             install_packages(all_to_install)
 
-            # 2. Linkowanie dotfiles z folderu common/
+
             setup_dotfiles()
 
-           
 
-                
-            
+
+
+
             input("\n✅ Wszystko gotowe! Enter, by wrócić...")
 
         elif main_choice == "6" or not main_choice:
